@@ -1,0 +1,26 @@
+{
+  "name": "web3-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "account.js",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "lodash": "^4.17.5",
+    "solc": "^0.4.21",
+    "web3": "^1.0.0-beta.33"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jonybang/web3-tests.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jonybang/web3-tests/issues"
+  },
+  "homepage": "https://github.com/Jonybang/web3-tests#readme"
+}

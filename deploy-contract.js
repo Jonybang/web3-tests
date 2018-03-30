@@ -15,7 +15,12 @@ module.exports = {
 		_.forEach(sources, function (path, name) {
 			convertedSources[name] = fs.readFileSync(path, 'utf8').toString();
 		});
-		return solc.compile({sources: convertedSources}, 1, findImports);
+		let result = solc.compile({sources: convertedSources}, 1, findImports);
+
+		if(result.errors && result.errors.length)
+			throw result.errors;
+
+		return result;
 	},
 
 	deploy: function (compiledContract, accountAddress, args) {

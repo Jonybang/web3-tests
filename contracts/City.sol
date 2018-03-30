@@ -77,6 +77,15 @@ contract City is EIP20Interface {
         paymentPeriod = _paymentPeriod;
     }
 
+    function increaseSupply(
+        uint256 _additionalSupply
+    ) public {
+        require(msg.sender == mayor);
+
+        currentSupply += _additionalSupply;
+        totalSupply += _additionalSupply;
+    }
+
     function configureConfirmsToParticipation(
         uint256 _confirmsToParticipation
     ) public {

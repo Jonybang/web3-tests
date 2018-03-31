@@ -1,0 +1,19 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~font-awesome/scss/font-awesome";
+@import "tabs";
+
+body {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+@import 'adaptive';

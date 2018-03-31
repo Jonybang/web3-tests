@@ -46,6 +46,8 @@ contract City is EIP20Interface {
     uint256 public payment;
     uint256 public paymentPeriod;
 
+    uint256 public paymentSent;
+
     address public mayor;
 
     function City(
@@ -126,6 +128,12 @@ contract City is EIP20Interface {
 
         msg.sender.transfer(payment);
 
+        paymentSent += payment;
+
+        return payments[msg.sender].last_timestamp + paymentPeriod;
+    }
+
+    function nextPaymentOn() public view returns (uint256 next_date) {
         return payments[msg.sender].last_timestamp + paymentPeriod;
     }
 
@@ -162,15 +170,15 @@ contract City is EIP20Interface {
         return allowed[_owner][_spender];
     }
 
-    function requestParticipation() public returns (uint256 count) {
+    function requestParticipation() public returns (bool success) {
         require(currentSupply > 0);
         require(balances[msg.sender] == 0);
+        require(!participationRequests[msg.sender].sent);
 
-        if(!participationRequests[msg.sender].sent){
-            participationRequests[msg.sender] = Library.participationRequest({ sent: true, confirmed: false, confirmations_count: 0 });
-            emit ParticipationRequest(msg.sender);
-        }
-        return participationRequests[msg.sender].confirmations_count;
+        participationRequests[msg.sender] = Library.participationRequest({ sent: true, confirmed: false, confirmations_count: 0 });
+        emit ParticipationRequest(msg.sender);
+
+        return true;
     }
 
     function confirmParticipation(address _requested) public returns (uint256 count) {
@@ -202,6 +210,10 @@ contract City is EIP20Interface {
             emit ParticipationConfirm(_requested, msg.sender, false);
         }
 
+        return participationRequests[_requested].confirmations_count;
+    }
+
+    function confirmsOf(address _requested) public view returns (uint256 confirmations_count) {
         return participationRequests[_requested].confirmations_count;
     }
 

@@ -34,6 +34,9 @@ export default {
 			this.$root.contract.getProperty('paymentPeriod', 'timestamp_to_hours').then((result) => {
 				this.payment_period = result;
 			});
+			this.$root.contract.getProperty('paymentSent', 'wei_to_eth').then((result) => {
+				this.payment_sent = result;
+			});
         }
     },
     data() {
@@ -43,7 +46,8 @@ export default {
 			contract_total_supply: null,
 			contract_current_supply: null,
             payment_amount: null,
-            payment_period: null
+            payment_period: null,
+			payment_sent: null
         }
     },
     computed: {

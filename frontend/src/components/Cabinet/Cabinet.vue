@@ -22,11 +22,12 @@
         <div class="col-md-4">
           <h4>City contract info</h4>
           <div class="alert alert-info" role="alert">
-            <b>Contract name:</b> {{contract_name}}({{contract_symbol}}) <br>
+            <b>Contract name:</b> {{contract_name}}({{contract_symbol}}) <br><br>
             <b>Total tokens:</b> {{contract_total_supply}} <br>
-            <b>Tokens reserve:</b> {{contract_current_supply}} <br>
+            <b>Tokens reserve:</b> {{contract_current_supply}} <br><br>
             <b>Payment amount:</b> {{payment_amount}} ETH<br>
-            <b>Payment period:</b> {{payment_period}} hours
+            <b>Payment period:</b> {{payment_period}} hours<br><br>
+            <b>Payment sent:</b> {{payment_sent}} ETH
           </div>
         </div>
       </div>

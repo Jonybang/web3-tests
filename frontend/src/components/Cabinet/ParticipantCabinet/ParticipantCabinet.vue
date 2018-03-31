@@ -1,6 +1,8 @@
 <template>
   <div class="participant" style="padding: 10px;">
-    Your tokens: {{token_balance}}
+    <div>Your tokens: {{token_balance}}</div>
+
+    <button type="button" class="btn btn-primary">Get payment</button>
   </div>
 </template>
 

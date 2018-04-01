@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 export class EthContract {
 
 	constructor(web3, json_abi, address) {
@@ -7,11 +9,7 @@ export class EthContract {
 	}
 
 	getProperty(property_name, convert = null){
-		return new Promise((resolve, reject) => {
-			this.contractInstance.methods[property_name]().call((err, result) => {
-				return err ? reject(err) : resolve(result);
-			})
-		}).then((result) => {
+		return this.callMethod(property_name).then((result) => {
 			if(!convert)
 				return result;
 
@@ -24,11 +22,51 @@ export class EthContract {
 		})
 	}
 
-	callMethod(method_name, arg1, arg2, arg3){
+	callMethod(method_name){
+		let method_args = _.map(arguments, (arg) => arg).slice(1);
+
 		return new Promise((resolve, reject) => {
-			this.contractInstance.methods[method_name](arg1).call((err, result) => {
+			this.contractInstance.methods[method_name].apply(this, method_args).call((err, result) => {
 				return err ? reject(err) : resolve(result);
 			})
 		})
+	}
+
+	sendMethod(method_name, from_address){
+		let method_args = _.map(arguments, (arg) => arg).slice(2);
+
+		return new Promise((resolve, reject) => {
+			this.getGasPrice().then((gasPrice) => {
+				let method = this.contractInstance.methods[method_name].apply(this, method_args);
+
+				method.estimateGas({ from: from_address }).then((gasAmount) => {
+					if(this.$notify){
+						this.$notify({
+							type: 'info',
+							title: "Open Metamask",
+							text: "Please open Metamask to submit transaction"
+						})
+					}
+					method.send({
+						from: from_address,
+						gasPrice: gasPrice,
+						gas: gasAmount
+					},(err, result) => {
+						return err ? reject(err) : resolve(result);
+					})
+				})
+			});
+		})
+	}
+
+	getGasPrice(){
+		return this.web3.eth.getGasPrice().then(function(gasPrice){
+			gasPrice = parseInt(gasPrice);
+
+			if(gasPrice < 1000000000)
+				gasPrice = 1000000000;
+
+			return gasPrice.toString();
+		});
 	}
 }

@@ -1,5 +1,7 @@
 <template>
   <div id="app">
+    <notifications :duration="7000" position="top right"></notifications>
+
     <div class="container">
       <router-view></router-view>
     </div>

@@ -8,12 +8,10 @@ import moment from 'moment';
 import Notifications from 'vue-notification'
 
 import storePlugin from './services/store.plugin.js';
-import httpPlugin from './services/http.plugin.js';
 import {EthContract} from "./services/ethContract";
 
 Vue.use(Notifications);
 
-Vue.use(httpPlugin);
 Vue.use(Vuex);
 Vue.use(storePlugin);
 
@@ -30,8 +28,6 @@ Vue.filter('beautyDate', function (date) {
 export default {
   name: 'app',
   created() {
-	this.$http.initInstance(this);
-
     window.addEventListener('load', () => {
         // Checking if Web3 has been injected by the browser (Mist/MetaMask)
         if (typeof web3 !== 'undefined') {
@@ -47,6 +43,7 @@ export default {
 			this.$store.commit('eth_address', accounts[0]);
 
 			this.$root.contract = new EthContract(this.$root.web3, this.eth_contract_abi, this.eth_contract_address);
+			this.$root.contract.$notify = this.$notify;
 
 			this.$store.commit('eth_ready', true);
 		});

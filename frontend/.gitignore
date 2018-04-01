@@ -1,5 +1,4 @@
 .DS_Store
-dist/
 node_modules/
 vendor/vue-async-modal/node_modules/
 npm-debug.log*

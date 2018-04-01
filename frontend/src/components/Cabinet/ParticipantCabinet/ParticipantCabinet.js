@@ -23,29 +23,68 @@ export default {
 
 			this.$root.contract.callMethod('balanceOf', eth_address).then((result) => {
 				this.token_balance = result || 0;
-			});
+				this.token_balance_loaded = true;
 
-			this.$root.contract.callMethod('payments', eth_address).then((payments_result) => {
-				this.$root.contract.getProperty('paymentPeriod').then((period_result) => {
-					let timestamp = parseInt(payments_result.last_timestamp) + parseInt(period_result);
-					this.next_payment_on = new Date(timestamp * 1000);
-				});
+				if(this.token_balance)
+					this.getPaymentsInfo(eth_address);
+				else
+					this.getConfirmationsInfo(eth_address);
 			});
 		},
+
 		getPayment(){
-			this.$root.contract.sendMethod('getPayment', this.eth_address).then((result) => {
+			this.$root.contract.sendMethod(this.eth_address, 'getPayment').then((result) => {
 				this.$notify({
 					type: 'success',
 					title: "Transaction success",
 					text: "Transaction hash: " + result
 				})
 			});
+		},
+
+		requestParticipation(){
+			this.$root.contract.sendMethod(this.eth_address, 'requestParticipation').then((result) => {
+				this.$notify({
+					type: 'success',
+					title: "Participation request sent, please wait for confirm",
+					text: "Transaction hash: " + result
+				})
+			});
+		},
+
+		getPaymentsInfo(eth_address){
+			this.$root.contract.callMethod('payments', eth_address).then((accountPayments) => {
+				this.$root.contract.getProperty('paymentPeriod').then((paymentPeriod) => {
+					this.payment_received = this.$root.web3.utils.fromWei(accountPayments.total_amount);
+
+					let timestamp = parseInt(accountPayments.last_timestamp) + parseInt(paymentPeriod);
+					this.next_payment_on = new Date(timestamp * 1000);
+				});
+			});
+		},
+
+		getConfirmationsInfo(eth_address){
+			this.$root.contract.callMethod('participationRequests', eth_address).then((accountParticipationRequests) => {
+				this.$root.contract.getProperty('confirmsToParticipation').then((confirmsToParticipation) => {
+					this.participation_request_sent = accountParticipationRequests.sent;
+					this.confirmations_count = accountParticipationRequests.confirmations_count;
+					this.confirms_to_participation = confirmsToParticipation;
+
+					if(accountParticipationRequests.confirmed)
+						this.getTokenBalance(eth_address);
+				});
+			});
 		}
 	},
 	data: function () {
 		return {
+			token_balance_loaded: false,
 			token_balance: null,
-			next_payment_on: null
+			payment_received: null,
+			next_payment_on: null,
+			participation_request_sent: null,
+			confirmations_count: null,
+			confirms_to_participation: null
 		};
 	},
 	computed: {

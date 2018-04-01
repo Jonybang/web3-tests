@@ -32,7 +32,7 @@ export class EthContract {
 		})
 	}
 
-	sendMethod(method_name, from_address){
+	sendMethod(from_address, method_name){
 		let method_args = _.map(arguments, (arg) => arg).slice(2);
 
 		return new Promise((resolve, reject) => {

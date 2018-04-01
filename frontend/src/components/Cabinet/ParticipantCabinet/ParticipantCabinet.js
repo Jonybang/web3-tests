@@ -22,7 +22,7 @@ export default {
 				return;
 
 			this.$root.contract.callMethod('balanceOf', eth_address).then((result) => {
-				this.token_balance = result || 0;
+				this.token_balance = parseInt(result || 0);
 				this.token_balance_loaded = true;
 
 				if(this.token_balance)
@@ -48,7 +48,11 @@ export default {
 					type: 'success',
 					title: "Participation request sent, please wait for confirm",
 					text: "Transaction hash: " + result
-				})
+				});
+
+				setTimeout(() => {
+					this.getTokenBalance(this.eth_address);
+				}, 5000);
 			});
 		},
 
